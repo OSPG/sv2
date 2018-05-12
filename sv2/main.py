@@ -3,7 +3,7 @@ import argparse
 import pkgutil
 import sys
 
-from helpers import get_public_class, get_public_members
+from sv2.helpers import get_public_class, get_public_members
 
 
 class Report:
@@ -95,7 +95,7 @@ def initialize_checkers_options(checkers):
 
     return checkers_options
 
-if __name__ == "__main__":
+def main():
     parser = setup_args()
     args = parser.parse_args()
     checkers = get_available_checkers()
@@ -130,3 +130,6 @@ if __name__ == "__main__":
         checkers_modules = import_checkers(checkers)
         run_checkers(checkers_modules, repots, checkers_options)     
         repots.print()   
+
+if __name__ == "__main__":
+    main()
