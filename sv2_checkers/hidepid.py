@@ -29,5 +29,3 @@ def makes_sense(r) -> bool:
         return False
 
     return True
-
-
