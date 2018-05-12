@@ -3,6 +3,8 @@ import argparse
 import pkgutil
 import sys
 
+from helpers import get_public_class, get_public_members
+
 
 class Report:
 
@@ -50,6 +52,7 @@ def setup_args():
     g.add_argument('--only', nargs='+', help='Only run the next checkers')
     g.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
     g.add_argument('--list-checkers', action="store_true", help='List available checkers')
+    g.add_argument('--list-all-checkers', action="store_true", help='List all available checkers')
     parser.add_argument('--hide-inactive', action="store_true", help="Hide checkers that won't run")
     return parser
 
@@ -64,7 +67,17 @@ def list_checkers(l):
     print("LIST OF AVAILABLE CHECKERS")
     for m in l:
         summary = importlib.import_module("sv2_checkers." + m).summary
-        print("{}: {}".format(m, summary))
+        print("\t{}: {}".format(m, summary))
+
+def list_all_checkers(l):
+    print("LIST OF ALL AVAILABLE CHECKERS")
+    for m in l:
+        checker = importlib.import_module("sv2_checkers." + m)
+        summary = checker.summary
+        print("\tList of {} checks".format(m))
+        for c in get_public_class(checker):
+            for member in get_public_members(getattr(checker, c)):
+                print("\t\t", member)
 
 def run_checkers(checkers, r_manager, opts):
     for c in checkers:
@@ -110,6 +123,8 @@ if __name__ == "__main__":
 
     if args.list_checkers:
         list_checkers(checkers)
+    elif args.list_all_checkers:
+        list_all_checkers(checkers)
     else:
         repots = ReportManager(args.hide_inactive)
         checkers_modules = import_checkers(checkers)
