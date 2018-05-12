@@ -41,6 +41,7 @@ class ReportManager:
             if r != self._reports[-1]:
                 print("")
 
+
 def setup_args():
     parser = argparse.ArgumentParser()
     g = parser.add_mutually_exclusive_group()
@@ -65,31 +66,52 @@ def list_checkers(l):
         summary = importlib.import_module("sv2_checkers." + m).summary
         print("{}: {}".format(m, summary))
 
-def run_checkers(checkers, r_manager):
+def run_checkers(checkers, r_manager, opts):
     for c in checkers:
-        r = Report(c.__name__.split(".")[-1])
+        name = c.__name__.split(".")[-1]
+        r = Report(name)
         if c.makes_sense(r):
-            c.run(r)
+            c.run(r, opts[name])
         r_manager.add_report(r)
     return r_manager
+
+def initialize_checkers_options(checkers):
+    checkers_options = {}
+    for i in checkers:
+        checkers_options[i] = {"exclude_list": [], "only_list": []}
+
+    return checkers_options
 
 if __name__ == "__main__":
     parser = setup_args()
     args = parser.parse_args()
     checkers = get_available_checkers()
+    checkers_options = initialize_checkers_options(checkers)
 
     if args.exclude:
         for i in args.exclude:
-            checkers.remove(i)
+            if "." in i:
+                name, check = i.split(".")
+                checkers_options[name]["exclude_list"].append(check)
+            else:
+                checkers.remove(i)
 
     if args.only:
+        checkers = []
         # TODO: Check that provided checkers are valid
-        checkers = args.only
+        for i in args.only:
+            if "." in i:
+                name, check = i.split(".")
+                checkers_options[name]["only_list"].append(check)
+                if name not in checkers:
+                    checkers.append(name)
+            else:
+                checkers.append(i)
 
     if args.list_checkers:
         list_checkers(checkers)
     else:
         repots = ReportManager(args.hide_inactive)
         checkers_modules = import_checkers(checkers)
-        run_checkers(checkers_modules, repots)     
+        run_checkers(checkers_modules, repots, checkers_options)     
         repots.print()   
