@@ -34,6 +34,10 @@ class ReportManager:
             if self._hide_inactive and r.reason:
                 continue
 
+            if not r.reason and len(r.issues) == 0:
+                print("NO REPORTS FOR " + r.name)
+                continue            
+
             print("REPORTS FOR " + r.name)        
             if r.reason:
                 print(r.name + " didn't run because " + r.reason) 
