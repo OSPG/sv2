@@ -6,6 +6,7 @@ import gzip
 
 from sv2.helpers import get_checkers_to_run
 
+summary = "Check kernel configuration"
 
 report = None
 
