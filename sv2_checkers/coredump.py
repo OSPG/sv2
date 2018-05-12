@@ -1,5 +1,5 @@
 import os
-from sv2.helpers import get_public_members
+from sv2.helpers import get_public_members, get_checkers_to_run
 
 summary = "Check if coredumps are enabled"
 
@@ -16,15 +16,7 @@ class CoreDump:
 
 def run(report, opts):
     c = CoreDump(report)
-
-    m_l = get_public_members(CoreDump)
-    if opts["exclude_list"]:
-        for i in opts["exclude_list"]:
-            m_l.remove(i)
-    elif opts["only_list"]:
-        m_l = opts["only_list"]
-
-    for m in m_l:
+    for m in get_checkers_to_run(CoreDump, opts):
         getattr(c, m)()
 
 
