@@ -40,10 +40,10 @@ class ReportManager:
 
             print("REPORTS FOR " + r.name)        
             if r.reason:
-                print(r.name + " didn't run because " + r.reason) 
+                print("\t"+r.name + " didn't run because " + r.reason) 
             else:
                 for i in r.issues:
-                    print(i)
+                    print("\t"+i)
             if r != self._reports[-1]:
                 print("")
 
