@@ -1,7 +1,8 @@
-from sv2.helpers import get_public_members, get_checkers_to_run
-
-import psutil
 import platform
+import psutil
+
+from sv2.helpers import get_checkers_to_run
+
 
 summary = "Check hidepid"
 

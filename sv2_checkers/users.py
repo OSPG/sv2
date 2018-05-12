@@ -1,7 +1,7 @@
-import pwd
 import spwd
-import os
 import stat
+import pwd
+import os
 
 from sv2.helpers import get_checkers_to_run
 

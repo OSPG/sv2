@@ -1,5 +1,7 @@
 import os
-from sv2.helpers import get_public_members, get_checkers_to_run
+
+from sv2.helpers import get_checkers_to_run
+
 
 summary = "Check if coredumps are enabled"
 

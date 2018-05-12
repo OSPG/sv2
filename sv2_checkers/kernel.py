@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-
-import os.path
 import platform
+import os.path
 import gzip
 
 from sv2.helpers import get_checkers_to_run
+
 
 summary = "Check kernel configuration"
 
