@@ -28,3 +28,8 @@ def get_checkers_to_run(class_obj, opts):
     elif opts["only_list"]:
         m_l = opts["only_list"]
     return m_l
+
+def run_checkers(class_instance, opts):
+    c = class_instance
+    for m in get_checkers_to_run(type(c), opts):
+        getattr(c, m)()

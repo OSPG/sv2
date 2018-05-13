@@ -3,6 +3,9 @@ import stat
 import psutil
 import grp
 
+from sv2.helpers import run_checkers
+
+
 summary = "Check bind9"
 
 report = None
@@ -43,8 +46,8 @@ def run(r, opts):
     global report
     report = r
     c = Bind9()
-    for m in get_checkers_to_run(Bind9, opts):
-        getattr(c, m)()
+    run_checkers(c, opts)
+
 
 def makes_sense(r) -> bool:
     # We should extent the check to ensure that this is not another program

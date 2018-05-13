@@ -3,7 +3,7 @@ import os
 from os import popen, path
 from sys import stderr
 
-from sv2.helpers import get_checkers_to_run
+from sv2.helpers import run_checkers
 
 
 summary = "Check ssh configuration"
@@ -105,8 +105,8 @@ def run(r, opts):
     global report
     report = r
     c = SSHCheck()
-    for m in get_checkers_to_run(SSHCheck, opts):
-        getattr(c, m)()
+    run_checkers(c, opts)
+
 
 def makes_sense(r) -> bool:
     if os.geteuid() != 0:

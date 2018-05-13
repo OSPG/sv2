@@ -2,7 +2,7 @@ import platform
 import os.path
 import gzip
 
-from sv2.helpers import get_checkers_to_run
+from sv2.helpers import run_checkers
 
 
 summary = "Check kernel configuration"
@@ -95,9 +95,8 @@ def run(r, opts):
     global report
     report = r
     c = KernelCheck(get_config_file())
+    run_checkers(c, opts)
 
-    for m in get_checkers_to_run(KernelCheck, opts):
-        getattr(c, m)()
 
 def makes_sense(r) -> bool:
     if not platform.system() == "Linux":

@@ -1,6 +1,6 @@
 import os
 
-from sv2.helpers import get_checkers_to_run
+from sv2.helpers import run_checkers
 
 
 summary = "Check if coredumps are enabled"
@@ -18,8 +18,7 @@ class CoreDump:
 
 def run(report, opts):
     c = CoreDump(report)
-    for m in get_checkers_to_run(CoreDump, opts):
-        getattr(c, m)()
+    run_checkers(c, opts)
 
 
 def makes_sense(report):

@@ -1,7 +1,7 @@
 import os
 import iptc
 
-from sv2.helpers import get_checkers_to_run
+from sv2.helpers import run_checkers
 
 # TODO: This check should check if some firewall is used, not only iptables
 
@@ -29,8 +29,8 @@ def run(r, opts):
     global report
     report = r
     c = IptablesCheck()
-    for m in get_checkers_to_run(IptablesCheck, opts):
-        getattr(c, m)()
+    run_checkers(c, opts)
+
 
 def makes_sense(r) -> bool:
     if os.geteuid() != 0:
