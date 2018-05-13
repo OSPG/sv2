@@ -30,11 +30,20 @@ cd sv2
 ```
 pip3 install -r requirements.txt
 ```
+* Install the script itself
+```
+python3 setup.py install --user
+```
+* Run it (you need to have ~/.local/bin on your path)
+```
+sv2
+```
 
 ### Second option, from gentoo overlay
 
 * Configure this overlay https://mumei.space/david/gentoo-overlay
-* emerge app-forensics/sv2
+* **emerge app-forensics/sv2**
+* Have fun
 
 That is all. :)
 
