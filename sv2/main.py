@@ -63,8 +63,6 @@ class ReportManager:
 def setup_args():
     parser = argparse.ArgumentParser()
     g = parser.add_mutually_exclusive_group()
-    # TODO: Allow to exclude/include single checks of a given checkers,
-    #   like --exclude a.sub_a a.sub_b
     g.add_argument('--only', nargs='+', help='Only run the next checkers')
     g.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
     g.add_argument('--list-checkers', action="store_true",
