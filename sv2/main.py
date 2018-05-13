@@ -63,12 +63,12 @@ class ReportManager:
 def setup_args():
     parser = argparse.ArgumentParser()
     g = parser.add_mutually_exclusive_group()
-    g.add_argument('--only', nargs='+', help='Only run the next checkers')
-    g.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
     g.add_argument('--list-checkers', action="store_true",
                    help='List available checkers')
     g.add_argument('--list-all-checkers', action="store_true",
                    help='List all available checkers')
+    parser.add_argument('--select', nargs='+', help='Select checkers to be run')
+    parser.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
     parser.add_argument('--hide-inactive', action="store_true",
                         help="Hide checkers that won't run")
     parser.add_argument('--verbose', action='store_true',
@@ -119,7 +119,7 @@ def run_checkers(checkers, r_manager, opts):
 def initialize_checkers_options(checkers):
     checkers_options = {}
     for i in checkers:
-        checkers_options[i] = {"exclude_list": [], "only_list": []}
+        checkers_options[i] = {"exclude_list": [], "select_list": []}
 
     return checkers_options
 
@@ -138,13 +138,13 @@ def main():
             else:
                 checkers.remove(i)
 
-    if args.only:
+    if args.select:
         checkers = []
         # TODO: Check that provided checkers are valid
-        for i in args.only:
+        for i in args.select:
             if "." in i:
                 name, check = i.split(".")
-                checkers_options[name]["only_list"].append(check)
+                checkers_options[name]["select_list"].append(check)
                 if name not in checkers:
                     checkers.append(name)
             else:

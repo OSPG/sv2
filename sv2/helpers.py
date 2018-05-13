@@ -30,8 +30,8 @@ def get_checkers_to_run(class_obj, opts):
     if opts["exclude_list"]:
         for i in opts["exclude_list"]:
             m_l.remove(i)
-    elif opts["only_list"]:
-        m_l = opts["only_list"]
+    elif opts["select_list"]:
+        m_l = opts["select_list"]
     return m_l
 
 
