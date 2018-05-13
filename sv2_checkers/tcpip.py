@@ -7,6 +7,7 @@ summary = "Check common tcp/ip config"
 
 report = None
 
+
 class _Sysctl:
     def read(self, key):
         with open("/proc/sys/%s" % key.replace(".", "/")) as f:
@@ -49,7 +50,8 @@ class TCPIP:
 
     def ignore_bogus(self):
         if not int(self.sysctl.read("net.ipv4.icmp_ignore_bogus_error_responses")):
-            report.new_issue("Enable net.ipv4.icmp_ignore_bogus_error_responses.")
+            report.new_issue(
+                "Enable net.ipv4.icmp_ignore_bogus_error_responses.")
 
 
 def run(r, opts):

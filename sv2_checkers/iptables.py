@@ -9,6 +9,7 @@ summary = "Check if iptables are used"
 
 report = None
 
+
 class IptablesCheck:
     def __init__(self):
         count = 0
@@ -22,8 +23,9 @@ class IptablesCheck:
             self._used = True
 
     def used(self):
-        if not self._used:        
+        if not self._used:
             report.new_issue("Iptables are not used")
+
 
 def run(r, opts):
     global report

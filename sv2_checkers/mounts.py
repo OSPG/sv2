@@ -18,7 +18,8 @@ class MountCheck:
             if i[1] == "/tmp":
                 if not "noexec" in i[3] or "nosuid" not in i[3] \
                         or "nodev" not in i[3]:
-                    report.new_issue("/tmp mountpoint should have noexec and nosuid options.")
+                    report.new_issue(
+                        "/tmp mountpoint should have noexec and nosuid options.")
                     return
         report.new_issue(
             "/tmp should be separated and have noexec, nosuid and nodev options.")
@@ -40,7 +41,9 @@ class MountCheck:
         for partition in psutil.disk_partitions():
             usage = psutil.disk_usage(partition[1])[-1]
             if usage >= 90:
-                report.new_issue("Usage of {}: {}%".format(partition[1], usage))
+                report.new_issue(
+                    "Usage of {}: {}%".format(partition[1], usage))
+
 
 def run(r, opts):
     global report

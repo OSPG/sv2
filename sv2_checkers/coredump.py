@@ -5,6 +5,7 @@ from sv2.helpers import run_checkers
 
 summary = "Check if coredumps are enabled"
 
+
 class CoreDump:
 
     def __init__(self, report):

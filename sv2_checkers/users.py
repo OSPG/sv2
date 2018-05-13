@@ -16,7 +16,8 @@ class UsersCheck:
     def check_uid(self):
         for u in pwd.getpwall():
             if u.pw_uid == 0 and u.pw_name != "root":
-                report.new_issue("There is a user with uid = 0 which is not root")
+                report.new_issue(
+                    "There is a user with uid = 0 which is not root")
 
     def check_expiration(self):
         d = spwd.getspnam("root")
@@ -36,7 +37,8 @@ class UsersCheck:
             report.new_issue("Wrong permissions of /root")
         for user_home in users_homes:
             if user_home.is_dir() and os.stat(user_home.path).st_mode & 0b111111:
-                report.new_issue("Wrong permissions of {}".format(user_home.path))
+                report.new_issue(
+                    "Wrong permissions of {}".format(user_home.path))
 
 
 def run(r, opts):

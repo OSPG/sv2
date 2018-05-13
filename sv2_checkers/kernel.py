@@ -9,6 +9,7 @@ summary = "Check kernel configuration"
 
 report = None
 
+
 class KernelCheck:
 
     def __init__(self, config):
@@ -28,14 +29,15 @@ class KernelCheck:
                 return True
 
         return False
-    
+
     def heap_randomization(self):
         if self._isYes("COMPAT_BRK"):
             report.new_issue("Heap randomization is disabled. Enable it")
 
     def stack_protector(self):
         if self._isYes("CC_STACKPROTECTOR_NONE"):
-            report.new_issue("Stack protector is completely disabled. Enable it")
+            report.new_issue(
+                "Stack protector is completely disabled. Enable it")
 
     def legacy_vsyscall(self):
         if not self._isYes("LEGACY_VSYSCALL_NONE"):
@@ -47,11 +49,13 @@ class KernelCheck:
 
     def dmesg_restricted(self):
         if not self._isYes("SECURITY_DMESG_RESTRICT"):
-            report.new_issue("Restrict access to dmesg logs to avoid information leaks")
+            report.new_issue(
+                "Restrict access to dmesg logs to avoid information leaks")
 
     def hardened_usercopy(self):
         if not self._isYes("HARDENED_USERCOPY"):
-            report.new_issue("Enable hardened memory copies to/from the kernel")
+            report.new_issue(
+                "Enable hardened memory copies to/from the kernel")
 
     def static_usermodehelper(self):
         if not self._isYes("STATIC_USERMODEHELPER"):
@@ -91,6 +95,7 @@ def get_config_file() -> str:
         if os.path.isfile(f):
             return f
 
+
 def run(r, opts):
     global report
     report = r
@@ -107,5 +112,3 @@ def makes_sense(r) -> bool:
         return False
 
     return True
-
-

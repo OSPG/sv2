@@ -21,6 +21,7 @@ hmac-sha1 weak hash algorithm
 hmac-sha1-etm@openssh.com weak hash algorithm
 """
 
+
 class _SSHConf(object):
 
     def __init__(self, conf):

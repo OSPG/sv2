@@ -42,6 +42,7 @@ class Bind9:
                 report.new_issue(
                     "Use allow-transfer to restirct zone transfer to trusted hosts.")
 
+
 def run(r, opts):
     global report
     report = r

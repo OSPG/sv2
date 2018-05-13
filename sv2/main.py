@@ -12,7 +12,7 @@ class Report:
         self.name = name
         self.issues = []
         self.reason = None
-    
+
     def new_issue(self, msg):
         self.issues.append(msg)
 
@@ -38,13 +38,11 @@ class ReportManager:
             if not r.reason and len(r.issues) == 0:
                 if self._verbose:
                     print("NO REPORTS FOR " + r.name)
-                continue            
+                continue
 
-
-
-            print("REPORTS FOR " + r.name)        
+            print("REPORTS FOR " + r.name)
             if r.reason:
-                print("\t"+r.name + " didn't run because " + r.reason) 
+                print("\t"+r.name + " didn't run because " + r.reason)
             else:
                 for i in r.issues:
                     print("\t"+i)
@@ -55,28 +53,36 @@ class ReportManager:
 def setup_args():
     parser = argparse.ArgumentParser()
     g = parser.add_mutually_exclusive_group()
-    # TODO: Allow to exclude/include single checks of a given checkers, 
+    # TODO: Allow to exclude/include single checks of a given checkers,
     #   like --exclude a.sub_a a.sub_b
     g.add_argument('--only', nargs='+', help='Only run the next checkers')
     g.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
-    g.add_argument('--list-checkers', action="store_true", help='List available checkers')
-    g.add_argument('--list-all-checkers', action="store_true", help='List all available checkers')
-    parser.add_argument('--hide-inactive', action="store_true", help="Hide checkers that won't run")
-    parser.add_argument('--verbose', action='store_true', help='Tell which checkers had no issues')
+    g.add_argument('--list-checkers', action="store_true",
+                   help='List available checkers')
+    g.add_argument('--list-all-checkers', action="store_true",
+                   help='List all available checkers')
+    parser.add_argument('--hide-inactive', action="store_true",
+                        help="Hide checkers that won't run")
+    parser.add_argument('--verbose', action='store_true',
+                        help='Tell which checkers had no issues')
     return parser
+
 
 def get_available_checkers():
     m = importlib.import_module("sv2_checkers")
     return [s[1] for s in pkgutil.walk_packages(m.__path__)]
 
+
 def import_checkers(l):
     return [importlib.import_module("sv2_checkers." + m) for m in l]
+
 
 def list_checkers(l):
     print("LIST OF AVAILABLE CHECKERS")
     for m in l:
         summary = importlib.import_module("sv2_checkers." + m).summary
         print("\t{}: {}".format(m, summary))
+
 
 def list_all_checkers(l):
     print("LIST OF ALL AVAILABLE CHECKERS")
@@ -88,6 +94,7 @@ def list_all_checkers(l):
             for member in get_public_members(getattr(checker, c)):
                 print("\t\t", member)
 
+
 def run_checkers(checkers, r_manager, opts):
     for c in checkers:
         name = c.__name__.split(".")[-1]
@@ -97,12 +104,14 @@ def run_checkers(checkers, r_manager, opts):
         r_manager.add_report(r)
     return r_manager
 
+
 def initialize_checkers_options(checkers):
     checkers_options = {}
     for i in checkers:
         checkers_options[i] = {"exclude_list": [], "only_list": []}
 
     return checkers_options
+
 
 def main():
     parser = setup_args()
@@ -137,8 +146,9 @@ def main():
     else:
         repots = ReportManager(args.hide_inactive, args.verbose)
         checkers_modules = import_checkers(checkers)
-        run_checkers(checkers_modules, repots, checkers_options)     
-        repots.print()   
+        run_checkers(checkers_modules, repots, checkers_options)
+        repots.print()
+
 
 if __name__ == "__main__":
     main()

@@ -8,6 +8,7 @@ summary = "Check hidepid"
 
 report = None
 
+
 class HidePID:
 
     def hide_pid(self):
@@ -16,6 +17,7 @@ class HidePID:
                 if "hidepid" not in mountpoint.opts \
                         or "hidepid=0" in mountpoint.opts:
                     report.new_issue("Set hidepid mount option on /proc.")
+
 
 def run(r, opts):
     global report

@@ -7,6 +7,7 @@ summary = "Check if usbguard is installed"
 
 report = None
 
+
 class USBGuard:
 
     def check_usb_guard(self):
@@ -14,6 +15,7 @@ class USBGuard:
             os.stat("/usr/bin/usbguard")
         except FileNotFoundError:
             report.new_issue("usbguard is not installed.")
+
 
 def run(r, opts):
     global report
