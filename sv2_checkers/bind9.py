@@ -3,6 +3,8 @@ import stat
 import psutil
 import grp
 
+summary = "Check bind9"
+
 report = None
 
 
