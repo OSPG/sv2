@@ -47,8 +47,8 @@ sv2
 
 That is all. :)
 
-If you execute it (as root) you may see something like:
-![](http://i.imgur.com/LPmqZgp.png)
+If you execute it you may see something like:
+![](https://my.mixtape.moe/voqcaa.png)
 
 ## Built With
 
