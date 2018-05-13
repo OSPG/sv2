@@ -3,6 +3,8 @@ import argparse
 import pkgutil
 import sys
 
+import colorama
+
 from sv2.helpers import get_public_class, get_public_members
 
 
@@ -21,6 +23,7 @@ class Report:
 
 
 class ReportManager:
+    # TODO: Maybe be should add the possibility to set a level of priority
 
     def __init__(self, hide_inactive, verbose):
         self._reports = []
@@ -31,23 +34,30 @@ class ReportManager:
         self._reports.append(r)
 
     def print(self):
+        colorama.init()
         for r in self._reports:
             if self._hide_inactive and r.reason:
                 continue
 
             if not r.reason and len(r.issues) == 0:
                 if self._verbose:
-                    print("NO REPORTS FOR " + r.name)
+                    print(colorama.Fore.GREEN, end='')
+                    print(r.name + ": NO issues found")
                 continue
 
-            print("REPORTS FOR " + r.name)
+            print(colorama.Fore.WHITE, end="")
+            print("Reports for {} checker".format(r.name))
             if r.reason:
-                print("\t"+r.name + " didn't run because " + r.reason)
+                print(colorama.Fore.BLUE, end="")
+                print("\t\"{}\" check did not run ({})".format(r.name, r.reason))
             else:
+                print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
                     print("\t"+i)
             if r != self._reports[-1]:
                 print("")
+            else:
+                print(colorama.Style.RESET_ALL, end="")
 
 
 def setup_args():
@@ -89,10 +99,13 @@ def list_all_checkers(l):
     for m in l:
         checker = importlib.import_module("sv2_checkers." + m)
         summary = checker.summary
+        print(colorama.Fore.WHITE, end="")
         print("\tList of {} checks".format(m))
+        print(colorama.Fore.BLUE, end="")
         for c in get_public_class(checker):
             for member in get_public_members(getattr(checker, c)):
                 print("\t\t", member)
+        print(colorama.Style.RESET_ALL, end="")
 
 
 def run_checkers(checkers, r_manager, opts):
