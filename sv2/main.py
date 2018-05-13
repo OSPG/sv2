@@ -22,9 +22,10 @@ class Report:
 
 class ReportManager:
 
-    def __init__(self, hide_inactive):
+    def __init__(self, hide_inactive, verbose):
         self._reports = []
         self._hide_inactive = hide_inactive
+        self._verbose = verbose
 
     def add_report(self, r):
         self._reports.append(r)
@@ -35,8 +36,11 @@ class ReportManager:
                 continue
 
             if not r.reason and len(r.issues) == 0:
-                print("NO REPORTS FOR " + r.name)
+                if self._verbose:
+                    print("NO REPORTS FOR " + r.name)
                 continue            
+
+
 
             print("REPORTS FOR " + r.name)        
             if r.reason:
@@ -58,6 +62,7 @@ def setup_args():
     g.add_argument('--list-checkers', action="store_true", help='List available checkers')
     g.add_argument('--list-all-checkers', action="store_true", help='List all available checkers')
     parser.add_argument('--hide-inactive', action="store_true", help="Hide checkers that won't run")
+    parser.add_argument('--verbose', action='store_true', help='Tell which checkers had no issues')
     return parser
 
 def get_available_checkers():
@@ -130,7 +135,7 @@ def main():
     elif args.list_all_checkers:
         list_all_checkers(checkers)
     else:
-        repots = ReportManager(args.hide_inactive)
+        repots = ReportManager(args.hide_inactive, args.verbose)
         checkers_modules = import_checkers(checkers)
         run_checkers(checkers_modules, repots, checkers_options)     
         repots.print()   
