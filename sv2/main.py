@@ -81,8 +81,11 @@ def get_available_checkers():
     return [s[1] for s in pkgutil.walk_packages(m.__path__)]
 
 
+def import_checker(name):
+    return importlib.import_module("sv2_checkers." + name)
+
 def import_checkers(l):
-    return [importlib.import_module("sv2_checkers." + m) for m in l]
+    return [import_checker(m) for m in l]
 
 def retrieve_checker_methods(module):
     methods_list = []
