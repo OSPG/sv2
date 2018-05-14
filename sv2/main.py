@@ -84,25 +84,35 @@ def get_available_checkers():
 def import_checkers(l):
     return [importlib.import_module("sv2_checkers." + m) for m in l]
 
+def retrieve_checker_methods(module):
+    methods_list = []
+    for c in get_public_class(module):
+        for member in get_public_members(getattr(module, c)):
+            methods_list.append(member)
+    return methods_list
 
 def list_checkers(l):
     print("LIST OF AVAILABLE CHECKERS")
-    for m in l:
-        summary = importlib.import_module("sv2_checkers." + m).summary
-        print("\t{}: {}".format(m, summary))
+    for module in import_checkers(l):
+        name = module.__name__.split(".")[1]
+        summary = module.summary
+        print(colorama.Fore.WHITE, end='')
+        print("\t{}: ".format(name), end='')
+        print(colorama.Fore.BLUE, end='')
+        print(summary)
+        print(colorama.Style.RESET_ALL, end="")
 
 
 def list_all_checkers(l):
     print("LIST OF ALL AVAILABLE CHECKERS")
-    for m in l:
-        checker = importlib.import_module("sv2_checkers." + m)
-        summary = checker.summary
+    for module in import_checkers(l):
+        summary = module.summary
+        name = module.__name__.split(".")[1]
         print(colorama.Fore.WHITE, end="")
-        print("\tList of {} checks".format(m))
+        print("\tList of {} checks".format(name))
         print(colorama.Fore.BLUE, end="")
-        for c in get_public_class(checker):
-            for member in get_public_members(getattr(checker, c)):
-                print("\t\t", member)
+        for member in retrieve_checker_methods(module):
+            print("\t\t", member)
         print(colorama.Style.RESET_ALL, end="")
 
 
