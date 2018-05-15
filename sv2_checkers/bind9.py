@@ -55,7 +55,7 @@ def makes_sense(r) -> bool:
     # with the same name.
     for process in psutil.process_iter():
         if process.name() == "named":
-            r.wont_run("Bind9 is not installed")
             return True
 
+    r.wont_run("Bind9 is not running")
     return False
