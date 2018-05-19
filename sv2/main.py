@@ -25,9 +25,8 @@ class Report:
 class ReportManager:
     # TODO: Maybe be should add the possibility to set a level of priority
 
-    def __init__(self, hide_inactive, verbose):
+    def __init__(self, verbose):
         self._reports = []
-        self._hide_inactive = hide_inactive
         self._verbose = verbose
 
     def add_report(self, r):
@@ -36,7 +35,7 @@ class ReportManager:
     def print(self):
         colorama.init()
         for r in self._reports:
-            if self._hide_inactive and r.reason:
+            if not self._verbose and r.reason:
                 continue
 
             if not r.reason and len(r.issues) == 0:
@@ -69,10 +68,8 @@ def setup_args():
                    help='List all available checkers')
     parser.add_argument('--select', nargs='+', help='Select checkers to be run')
     parser.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
-    parser.add_argument('--hide-inactive', action="store_true",
-                        help="Hide checkers that won't run")
     parser.add_argument('--verbose', action='store_true',
-                        help='Tell which checkers had no issues')
+                        help="Tell which checkers had no issues and which ones won't run")
     return parser
 
 
@@ -168,7 +165,7 @@ def main():
     elif args.list_all_checkers:
         list_all_checkers(checkers)
     else:
-        repots = ReportManager(args.hide_inactive, args.verbose)
+        repots = ReportManager(args.verbose)
         checkers_modules = import_checkers(checkers)
         run_checkers(checkers_modules, repots, checkers_options)
         repots.print()
