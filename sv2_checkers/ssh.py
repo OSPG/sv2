@@ -3,6 +3,8 @@ import os
 from os import popen, path
 from sys import stderr
 
+import psutil
+
 from sv2.helpers import run_checkers
 
 
@@ -113,5 +115,11 @@ def makes_sense(r) -> bool:
     if os.geteuid() != 0:
         r.wont_run("Needs root")
         return False
-    # TODO: Check if ssh is running
-    return True
+
+    for process in psutil.process_iter():
+        if process.name() == "sshd":
+            return True
+
+    r.wont_run("SSH daemon is not running")
+    return False
+
