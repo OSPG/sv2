@@ -26,7 +26,7 @@ class UsersCheck:
 
     def umask(self):
         with os.popen("umask") as p:
-            val = p.read()
+            val = p.read().split()[0]
         if val[-2:] != "77":
             report.new_issue("umask should be more restrictive (ie: 077)")
 
