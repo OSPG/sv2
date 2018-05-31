@@ -48,7 +48,7 @@ sv2
 That is all. :)
 
 If you execute it you may see something like:
-![](https://my.mixtape.moe/voqcaa.png)
+![](https://imgur.com/download/r96uZOh)
 
 ## Built With
 
