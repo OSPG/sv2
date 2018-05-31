@@ -41,7 +41,7 @@ sv2
 
 ### Second option, from gentoo overlay
 
-* Configure this overlay https://mumei.space/david/gentoo-overlay
+* Configure this overlay https://github.com/OSPG/gentoo-overlay
 * **emerge app-forensics/sv2**
 * Have fun
 
