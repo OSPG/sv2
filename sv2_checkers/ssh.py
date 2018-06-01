@@ -64,8 +64,8 @@ class SSHCheck(object):
                 "LoginGraceTime is very high.")
 
     def passauthentication(self):
-        if self._sshd["passwordauthentication"] == 'yes' or self._sshd["challengeresponseauthentication"] == 'yes':
-            report.new_issue("Disable keyboard-interactive and use ssh keys instead (or combine it, for example ssh keys + OTP codes). Make sure than PasswordAuthentication and ChallengeResponseAuthentication is both disabled.")
+        if self._sshd["passwordauthentication"] == 'yes':
+            report.new_issue("Disable keyboard-interactive and use ssh keys instead (or combine it, for example ssh keys + OTP codes). Make sure than PasswordAuthentication.")
 
     def TFA(self):
         with open("/etc/pam.d/sshd", 'r') as f:
