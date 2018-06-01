@@ -20,7 +20,7 @@ class KernelCheck:
             with gzip.open(config) as f:
                 self._config_file = f.readlines()
         else:
-            with open(config) as f:
+            with open(config, "rt") as f:
                 self._config_file = f.readlines()
 
     def _isYes(self, opt):
