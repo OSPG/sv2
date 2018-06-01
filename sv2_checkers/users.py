@@ -21,8 +21,8 @@ class UsersCheck:
 
     def check_expiration(self):
         d = spwd.getspnam("root")
-        if d.sp_expire == -1:
-            report.new_issue("Enable expiration of users")
+        if d.sp_max == -1:
+            report.new_issue("Enable password expiration of users")
 
     def umask(self):
         with os.popen("umask") as p:
