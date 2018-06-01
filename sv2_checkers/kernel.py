@@ -17,7 +17,7 @@ class KernelCheck:
             raise Exception("Kernel configuration not found.")
 
         if config.endswith(".gz"):
-            with gzip.open(config) as f:
+            with gzip.open(config, "rt") as f:
                 self._config_file = f.readlines()
         else:
             with open(config, "rt") as f:
