@@ -16,10 +16,11 @@ class MountCheck:
     def tmp(self):
         for i in self._partitions:
             if i[1] == "/tmp":
-                if not "noexec" in i[3] or "nosuid" not in i[3] \
-                        or "nodev" not in i[3]:
+                opt = i[3].split(',')
+                if not "noexec" in opt or "nosuid" not in opt \
+                        or "nodev" not in opt:
                     report.new_issue(
-                        "/tmp mountpoint should have noexec and nosuid options.")
+                        "/tmp mountpoint should have noexec,nosuid and nodev options.")
                     return
         report.new_issue(
             "/tmp should be separated and have noexec, nosuid and nodev options.")
@@ -32,8 +33,9 @@ class MountCheck:
 
     def tmpfs(self):
         for i in self._partitions:
-            if i[0] == "tmpfs" and i[0] != "/tmp":
-                if "nosuid" not in i[3] or "nodev" not in i[3]:
+            if i[0] == "tmpfs" and i[1] != "/tmp":
+                opt = i[3].split(',')
+                if "nosuid" not in opt or "nodev" not in opt:
                     report.new_issue(
                         "{} should have nosuid and nodev options.".format(i[1]))
 
