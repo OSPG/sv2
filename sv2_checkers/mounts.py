@@ -21,7 +21,7 @@ class MountCheck:
                         or "nodev" not in opt:
                     report.new_issue(
                         "/tmp mountpoint should have noexec,nosuid and nodev options.")
-                    return
+                return
         report.new_issue(
             "/tmp should be separated and have noexec, nosuid and nodev options.")
 
