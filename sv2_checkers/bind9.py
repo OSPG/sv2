@@ -1,4 +1,5 @@
 import os
+from os import popen
 import stat
 import psutil
 import grp
@@ -30,8 +31,8 @@ class Bind9:
             report.new_issue("Users should have not access to /etc/bind")
 
     def check_allow(self):
-        with open("/etc/bind/named.conf.options", 'r') as f:
-            conf = f.read()
+        with popen("/usr/bin/named-checkconf -p 2> /dev/null") as p:
+            conf = p.read()
             if "allow-recursion" not in conf:
                 report.new_issue(
                     "Use allow-recursion to restric recursive queries to trusted clients.")
