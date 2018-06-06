@@ -1,3 +1,4 @@
+import logging
 import importlib
 import argparse
 import pkgutil
@@ -7,6 +8,14 @@ import colorama
 
 from sv2.helpers import get_public_class, get_public_members
 
+dev_log = logging.getLogger("dev")
+fh = logging.FileHandler("/tmp/sv2.log")
+fh.setLevel(logging.DEBUG)
+dev_log.addHandler(fh)
+
+user_log = logging.getLogger("user")
+user_log.setLevel(logging.WARNING)
+
 
 class Report:
 
@@ -14,12 +23,17 @@ class Report:
         self.name = name
         self.issues = []
         self.reason = None
+        self.ex = None
 
     def new_issue(self, msg):
         self.issues.append(msg)
 
     def wont_run(self, reason):
         self.reason = reason
+
+    def exception(self, ex):
+        self.ex = ex
+
 
 
 class ReportManager:
@@ -28,6 +42,7 @@ class ReportManager:
     def __init__(self, verbose):
         self._reports = []
         self._verbose = verbose
+        self._exceptions = False
 
     def add_report(self, r):
         self._reports.append(r)
@@ -38,7 +53,7 @@ class ReportManager:
             if not self._verbose and r.reason:
                 continue
 
-            if not r.reason and len(r.issues) == 0:
+            if not r.ex and not r.reason and len(r.issues) == 0:
                 if self._verbose:
                     print(colorama.Fore.GREEN, end='')
                     print(r.name + ": NO issues found")
@@ -46,17 +61,24 @@ class ReportManager:
 
             print(colorama.Fore.WHITE, end="")
             print("Reports for {} checker".format(r.name))
-            if r.reason:
+            if r.ex:
+                self._exceptions = True
+                print(colorama.Fore.RED, end='')
+                print("\t\"{}\" returned exception: {}".format(r.name, r.ex))
+            elif r.reason:
                 print(colorama.Fore.BLUE, end="")
                 print("\t\"{}\" check did not run ({})".format(r.name, r.reason))
             else:
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
                     print("\t"+i)
+    
             if r != self._reports[-1]:
                 print("")
-            else:
-                print(colorama.Style.RESET_ALL, end="")
+
+        print(colorama.Style.RESET_ALL, end="")
+        if self._exceptions:
+            print("Exceptions ocurred, check log file on /tmp/sv2.log for more information")
 
 
 def setup_args():
@@ -120,9 +142,14 @@ def run_checkers(checkers, r_manager, opts):
     for c in checkers:
         name = c.__name__.split(".")[-1]
         r = Report(name)
-        if c.makes_sense(r):
-            c.run(r, opts[name])
+        try:
+            if c.makes_sense(r):
+                c.run(r, opts[name])
+        except Exception as ex:
+            dev_log.exception(ex)
+            r.exception(ex)
         r_manager.add_report(r)
+
     return r_manager
 
 
