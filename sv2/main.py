@@ -53,14 +53,18 @@ class ReportManager:
             if not self._verbose and r.reason:
                 continue
 
+            print(colorama.Fore.WHITE, end="")
+            print("Reports for {} checker".format(r.name))
             if not r.ex and not r.reason and len(r.issues) == 0:
                 if self._verbose:
                     print(colorama.Fore.GREEN, end='')
-                    print(r.name + ": NO issues found")
+                    print("\t\"{}\" NO issues found".format(r.name))
+
+                    # XXX: Ugly
+                    if r != self._reports[-1]:
+                        print("")
                 continue
 
-            print(colorama.Fore.WHITE, end="")
-            print("Reports for {} checker".format(r.name))
             if r.ex:
                 self._exceptions = True
                 print(colorama.Fore.RED, end='')
@@ -72,7 +76,7 @@ class ReportManager:
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
                     print("\t"+i)
-    
+
             if r != self._reports[-1]:
                 print("")
 
