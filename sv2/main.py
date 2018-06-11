@@ -48,9 +48,11 @@ class ReportManager:
         self._reports.append(r)
 
     def print(self):
+        counter = 0
         colorama.init()
         for r in self._reports:
             if not self._verbose and r.reason:
+                counter += 1
                 continue
 
             issues_found = r.ex or r.reason or len(r.issues) > 0
@@ -80,6 +82,9 @@ class ReportManager:
         print(colorama.Style.RESET_ALL, end="")
         if self._exceptions:
             print("Exceptions ocurred, check log file on /tmp/sv2.log for more information")
+
+        if counter > 0:
+            print("{} checkers didn't run, use --verbose to see their reasons".format(counter))
 
 
 def setup_args():
