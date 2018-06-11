@@ -35,7 +35,6 @@ class Report:
         self.ex = ex
 
 
-
 class ReportManager:
     # TODO: Maybe be should add the possibility to set a level of priority
 
@@ -81,10 +80,12 @@ class ReportManager:
 
         print(colorama.Style.RESET_ALL, end="")
         if self._exceptions:
-            print("Exceptions ocurred, check log file on /tmp/sv2.log for more information")
+            print(
+                "Exceptions ocurred, check log file on /tmp/sv2.log for more information")
 
         if counter > 0:
-            print("{} checkers didn't run, use --verbose to see their reasons".format(counter))
+            print(
+                "{} checkers didn't run, use --verbose to see their reasons".format(counter))
 
 
 def setup_args():
@@ -94,8 +95,12 @@ def setup_args():
                    help='List available checkers')
     g.add_argument('--list-all-checkers', action="store_true",
                    help='List all available checkers')
-    parser.add_argument('--select', nargs='+', help='Select checkers to be run')
-    parser.add_argument('--exclude', nargs='+', help='Exclude the given checkers')
+    parser.add_argument('--force', action='store_true',
+                        help="Force the execution of checks (for debugging purpose only)")
+    parser.add_argument('--select', nargs='+',
+                        help='Select checkers to be run')
+    parser.add_argument('--exclude', nargs='+',
+                        help='Exclude the given checkers')
     parser.add_argument('--verbose', action='store_true',
                         help="Tell which checkers had no issues and which ones won't run")
     return parser
@@ -109,8 +114,10 @@ def get_available_checkers():
 def import_checker(name):
     return importlib.import_module("sv2_checkers." + name)
 
+
 def import_checkers(l):
     return [import_checker(m) for m in l]
+
 
 def retrieve_checker_methods(module):
     methods_list = []
@@ -118,6 +125,7 @@ def retrieve_checker_methods(module):
         for member in get_public_members(getattr(module, c)):
             methods_list.append(member)
     return methods_list
+
 
 def list_checkers(l):
     print("LIST OF AVAILABLE CHECKERS")
@@ -144,12 +152,12 @@ def list_all_checkers(l):
         print(colorama.Style.RESET_ALL, end="")
 
 
-def run_checkers(checkers, r_manager, opts):
+def run_checkers(checkers, r_manager, opts, force):
     for c in checkers:
         name = c.__name__.split(".")[-1]
         r = Report(name)
         try:
-            if c.makes_sense(r):
+            if force or c.makes_sense(r):
                 c.run(r, opts[name])
         except Exception as ex:
             dev_log.exception(ex)
@@ -200,7 +208,7 @@ def main():
     else:
         repots = ReportManager(args.verbose)
         checkers_modules = import_checkers(checkers)
-        run_checkers(checkers_modules, repots, checkers_options)
+        run_checkers(checkers_modules, repots, checkers_options, args.force)
         repots.print()
 
 
