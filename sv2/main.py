@@ -2,6 +2,7 @@ import logging
 import importlib
 import argparse
 import pkgutil
+import sys
 
 import colorama
 
@@ -53,6 +54,7 @@ class ReportManager:
         self._reports.append(r)
 
     def print(self):
+        ret_val = 0
         counter = 0
         colorama.init()
         for r in self._reports:
@@ -60,13 +62,15 @@ class ReportManager:
                 counter += 1
                 continue
 
-            issues_found = r.ex or r.reason or len(r.issues) > 0
+            something_to_print = r.ex or r.reason or len(r.issues) > 0
+            if len(r.issues) > 0:
+                ret_val = 1
 
-            if issues_found or self._verbose:
+            if something_to_print or self._verbose:
                 print(colorama.Fore.WHITE, end="")
                 print("Reports for {} checker".format(r.name))
 
-            if not issues_found and self._verbose:
+            if not something_to_print and self._verbose:
                 print(colorama.Fore.GREEN, end='')
                 print("\t\"{}\" NO issues found".format(r.name))
             elif r.ex:
@@ -81,17 +85,20 @@ class ReportManager:
                 for i in r.issues:
                     print("\t{}".format(i.msg))
 
-            if (self._verbose or issues_found) and r != self._reports[-1]:
+            if (self._verbose or something_to_print) and r != self._reports[-1]:
                 print("")
 
         print(colorama.Style.RESET_ALL, end="")
         if self._exceptions:
+            ret_val = 2
             print(
                 "Exceptions ocurred, check log file on /tmp/sv2.log for more information")
 
         if counter > 0:
             print(
                 "{} checkers didn't run, use --verbose to see their reasons".format(counter))
+
+        return ret_val
 
 
 def setup_args():
@@ -209,14 +216,16 @@ def main():
 
     if args.list_checkers:
         list_checkers(checkers)
+        return 0
     elif args.list_all_checkers:
         list_all_checkers(checkers)
+        return 0
     else:
         repots = ReportManager(args.verbose)
         checkers_modules = import_checkers(checkers)
         run_checkers(checkers_modules, repots, checkers_options, args.force)
-        repots.print()
+        return repots.print()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
