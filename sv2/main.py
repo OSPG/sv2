@@ -2,7 +2,6 @@ import logging
 import importlib
 import argparse
 import pkgutil
-import sys
 
 import colorama
 
@@ -17,6 +16,13 @@ user_log = logging.getLogger("user")
 user_log.setLevel(logging.WARNING)
 
 
+class Issue:
+
+    def __init__(self, msg, long_msg):
+        self.msg = msg
+        self.long_msg = long_msg
+
+
 class Report:
 
     def __init__(self, name):
@@ -25,8 +31,8 @@ class Report:
         self.reason = None
         self.ex = None
 
-    def new_issue(self, msg):
-        self.issues.append(msg)
+    def new_issue(self, msg, long_msg=""):
+        self.issues.append(Issue(msg, long_msg))
 
     def wont_run(self, reason):
         self.reason = reason
@@ -73,7 +79,7 @@ class ReportManager:
             else:
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
-                    print("\t"+i)
+                    print("\t{}".format(i.msg))
 
             if (self._verbose or issues_found) and r != self._reports[-1]:
                 print("")
