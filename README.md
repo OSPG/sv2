@@ -4,13 +4,12 @@
 Security auditing tool, module-based, similar to [lynis](https://github.com/CISOfy/lynis), but developed with python and enthusiasm.
 
 ## Advice
-This project is in no active development (ie: we develop it when we have time).
-Also, it's very unstable, and bugs are frequents (at least for now). **But anyway, you can learn new things with this random project, and it is funny. :D**
+For now it may have bugs and such, in case you found some, please report it.
 
 ## Why did you do it?
-It occurred to someone, there was no reason not to do it and it seemed fun.
-
 The idea is to collect a general security recomendations in a form of a software that already checks whether your system is already configured to be secure or not. As such, it's not intended to be an enterprise level software with a lot of junk but a simple script that may or may not satisfy your needs.
+
+In comparison with lynis or yasat, writing new checkers should be a lot easier, also, it should be a lot faster when checking the system.
 
 ### Prerequisites
 
