@@ -1,6 +1,7 @@
 import logging
 import importlib
 import argparse
+import inspect
 import pkgutil
 import sys
 
@@ -23,20 +24,32 @@ class Issue:
         self.msg = msg
         self.long_msg = long_msg
 
+class WontRun:
+
+    def __init__(self, reason, name):
+        self.reason = reason
+        self.name = name
+
 
 class Report:
 
     def __init__(self, name):
         self.name = name
         self.issues = []
-        self.reason = None
+        self.reasons = []
         self.ex = None
 
     def new_issue(self, msg, long_msg=""):
         self.issues.append(Issue(msg, long_msg))
 
     def wont_run(self, reason):
-        self.reason = reason
+        caller = inspect.stack()[1][3]
+        if caller == "makes_sense":
+            name = self.name
+        else:
+            name = "{}.{}".format(self.name, caller)
+
+        self.reasons.append(WontRun(reason, name))
 
     def exception(self, ex):
         self.ex = ex
@@ -58,11 +71,11 @@ class ReportManager:
         counter = 0
         colorama.init()
         for r in self._reports:
-            if not self._verbose and r.reason:
+            if not self._verbose and len(r.reasons) > 0:
                 counter += 1
                 continue
 
-            something_to_print = r.ex or r.reason or len(r.issues) > 0
+            something_to_print = r.ex or len(r.reasons) > 0 or len(r.issues) > 0
             if len(r.issues) > 0:
                 ret_val = 1
 
@@ -77,9 +90,10 @@ class ReportManager:
                 self._exceptions = True
                 print(colorama.Fore.RED, end='')
                 print("\t\"{}\" returned exception: {}".format(r.name, r.ex))
-            elif r.reason:
+            elif len(r.reasons) > 0:
                 print(colorama.Fore.BLUE, end="")
-                print("\t\"{}\" check did not run ({})".format(r.name, r.reason))
+                for i in r.reasons:
+                    print("\t\"{}\" check did not run ({})".format(i.name, i.reason))
             else:
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:

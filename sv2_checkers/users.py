@@ -14,12 +14,20 @@ report = None
 # TODO: Check non-root users
 class UsersCheck:
     def check_uid(self):
+        if os.geteuid() != 0:
+            report.wont_run("Needs root to read /etc/shadow")
+            return
+
         for u in pwd.getpwall():
             if u.pw_uid == 0 and u.pw_name != "root":
                 report.new_issue(
                     "There is a user with uid = 0 which is not root")
 
     def check_expiration(self):
+        if os.geteuid() != 0:
+            report.wont_run("Needs root to read /etc/shadow")
+            return
+            
         d = spwd.getspnam("root")
         if d.sp_max == -1:
             report.new_issue("Enable password expiration of users")
@@ -49,7 +57,4 @@ def run(r, opts):
 
 
 def makes_sense(r) -> bool:
-    if os.geteuid() != 0:
-        r.wont_run("Needs root to read /etc/shadow")
-        return False
     return True
