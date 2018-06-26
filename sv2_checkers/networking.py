@@ -1,3 +1,4 @@
+import os
 import platform
 
 from sv2.helpers import run_checkers
@@ -52,6 +53,17 @@ class TCPIP:
         if not int(self.sysctl.read("net.ipv4.icmp_ignore_bogus_error_responses")):
             report.new_issue(
                 "Enable net.ipv4.icmp_ignore_bogus_error_responses.")
+
+    def bpf_jit_harden(self):
+        if not int(self.sysctl.read("net.core.bpf_jit_enable")):
+            return
+
+        if os.geteuid() != 0:
+            report.wont_run("needs root")
+            return
+
+        if not int(self.sysctl.read("net.core.bpf_jit_harden")):
+            report.new_issue("Enable net.core.bpf_hit_harden.")
 
 
 def run(r, opts):
