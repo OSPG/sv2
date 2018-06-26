@@ -66,12 +66,18 @@ class ReportManager:
     def add_report(self, r):
         self._reports.append(r)
 
+    def _print_reasons(self, r):
+        print(colorama.Fore.BLUE, end="")
+        for i in r.reasons:
+            print("\t\"{}\" check did not run ({})".format(i.name, i.reason))
+
     def print(self):
         ret_val = 0
         counter = 0
         colorama.init()
         for r in self._reports:
-            if not self._verbose and len(r.reasons) > 0:
+            not_executed = len(r.reasons) == 1 and r.reasons[0].name == r.name
+            if not self._verbose and not_executed:
                 counter += 1
                 continue
 
@@ -90,11 +96,11 @@ class ReportManager:
                 self._exceptions = True
                 print(colorama.Fore.RED, end='')
                 print("\t\"{}\" returned exception: {}".format(r.name, r.ex))
-            elif len(r.reasons) > 0:
-                print(colorama.Fore.BLUE, end="")
-                for i in r.reasons:
-                    print("\t\"{}\" check did not run ({})".format(i.name, i.reason))
+            elif not_executed:
+                self._print_reasons(r)
             else:
+                self._print_reasons(r)
+
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
                     print("\t{}".format(i.msg))
