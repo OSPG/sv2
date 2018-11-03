@@ -87,7 +87,7 @@ class ReportManager:
 
             if something_to_print or self._verbose:
                 print(colorama.Fore.WHITE, end="")
-                print("Reports for {} checker".format(r.name))
+                print("Reports for \"{}\":".format(r.name))
 
             if not something_to_print and self._verbose:
                 print(colorama.Fore.GREEN, end='')
@@ -99,7 +99,10 @@ class ReportManager:
             elif not_executed:
                 self._print_reasons(r)
             else:
-                self._print_reasons(r)
+                if self._verbose:
+                    self._print_reasons(r)
+                if not self._verbose:
+                    counter += len(r.reasons)
 
                 print(colorama.Fore.YELLOW, end="")
                 for i in r.issues:
@@ -116,7 +119,7 @@ class ReportManager:
 
         if counter > 0:
             print(
-                "{} checkers didn't run, use --verbose to see their reasons".format(counter))
+                "\n{} checkers couldn't run, use --verbose to see more information".format(counter))
 
         return ret_val
 
