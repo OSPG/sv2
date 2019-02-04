@@ -46,8 +46,7 @@ class _SSHConf(object):
 class SSHCheck(object):
 
     def __init__(self):
-        # XXX: In a near future we should add more default values for each one of the possible matches
-        with popen("/usr/sbin/sshd -T -C user=root 2>/dev/null") as p:
+        with popen("/usr/sbin/sshd -T -C \"user=root,addr=127.0.0.1,host=localhost,laddr=127.0.0.1,lport=22,rdomain=localhost\" 2>/dev/null") as p:
             sshd_config = p.read()
         self._sshd = _SSHConf(sshd_config)
 
