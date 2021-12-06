@@ -61,10 +61,6 @@ class KernelCheck:
         if not self._isYes("STATIC_USERMODEHELPER"):
             report.new_issue("Enable static usermode helper.")
 
-    def refcount(self):
-        if not self._isYes("REFCOUNT_FULL"):
-            report.new_issue("Enable full refcounting")
-
     def fortify(self):
         if not self._isYes("FORTIFY_SOURCE"):
             report.new_issue("Enable fortify source")
@@ -76,6 +72,10 @@ class KernelCheck:
     def hardened_SLAB_freelist(self):
         if not self._isYes("SLAB_FREELIST_HARDENED"):
             report.new_issue("Enable SLUB freelist hardening")
+    
+    def retpoline(self):
+        if not self._isYes("RETPOLINE"):
+            report.new_issue("Enable retpoline")
 
 
 def get_config_file() -> str:
